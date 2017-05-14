@@ -67,7 +67,8 @@
     <div class="nameCell marginRight col-lg-1 col-md-1 col-sm-1 col-xs-1">
       <input type="checkbox" class="checkbox" ng-model="student.isSafeToDelete" ng-change="saveAndToggleInvert(student)"/>
       <p class="nameCell marginTop" ng-class="{'redText': student.isSafeToDelete}">
-        {{$index + 1}}. {{student.name}}
+        <!-- {{$index + 1}}. {{student.name}} -->
+        {{$index + 1}}. {{student}}
       </p>
       <p class="extendTimeCell marginTop" ng-class="{'redText': student.isSafeToDelete}"> {{student.extendTime}}x</p>
     </div>

@@ -1,11 +1,7 @@
-spedtracker.controller('StudentCtrl', ["$scope", "StudentCrud", "UserCrud", "modalService", "$rootScope", "$interval", "$log", "$http", "$locale", "$location", "$templateCache", '$timeout', "$q", "$sce", "$tooltip", "$popover", "$firebaseAuth", "$cookies",
+spedtracker.controller('StudentCtrl', ["$scope", "StudentCrud", "$rootScope", "$interval", "$log", "$http", "$locale", "$location", "$templateCache", '$timeout', "$q", "$sce", "$tooltip", "$popover", "$firebaseAuth", "$cookies",
   function($scope, StudentCrud, UserCrud, modalService, $rootScope, $interval, $log, $http, $locale, $location, $templateCache, $timeout, $q, $sce, $tooltip, $popover, $firebaseAuth, $cookies) {
 
     // Remember, Firebase only accepts object, array, string, number, boolean, or null (see: https://www.firebase.com/docs/web/api/firebase/set.html)
-
-    $scope.students = StudentCrud.getAllStudents();
-
-    var students = $scope.students;
 
     var refreshTime = function() {
       time = Date.now();
@@ -16,7 +12,6 @@ spedtracker.controller('StudentCtrl', ["$scope", "StudentCrud", "UserCrud", "mod
     $interval(refreshTime, 1000);
 
     // Custom Time in case a student already began the test
-    $scope.newDueDate = new Date().setMinutes(0, 0);
 
     var promise;
 
@@ -327,35 +322,45 @@ spedtracker.controller('StudentCtrl', ["$scope", "StudentCrud", "UserCrud", "mod
       "checked": false
     };
 
-// Begin ExtendTime
+    $scope.students = StudentCrud.getAllStudents();
+
+    // var students = $scope.students;
+
+// Begin startTime
 
     $scope.newDueDate1 = new Date(new Date().setHours(1,0,0));
     $scope.newDueDate2 = new Date(new Date().setHours(1,0,0));
 
+// Begin ExtendTime
 
     $scope.timewrap = {};
 
     $scope.times = [1, 1.5, 2, 2.5, 3];
 
-// End ExtendTime
-
 // Begin Estimate
 
-    $scope.hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-    $scope.minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-
-    $scope.test1hourwrap = {};
-    $scope.test1minutewrap = {};
-    $scope.test2hourwrap = {};
-    $scope.test2minutewrap = {};
+    // $scope.hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    // $scope.minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+    //
+    // $scope.test1hourwrap = {};
+    // $scope.test1minutewrap = {};
+    // $scope.test2hourwrap = {};
+    // $scope.test2minutewrap = {};
 // End Estimate
 
 // Begin CRUD Functions
 
+    // $scope.addStudent = function() {
+    //   StudentCrud.addStudent($scope.newStudentName, $scope.timewrap.selectedTime, $scope.newtest1Name, $scope.newDueDate1, $scope.newtest2Name, $scope.newDueDate2);
+    //   var owner = "addStudent at " + Date.now();
+    //   toggleInvert(owner);
+    // };
+
     $scope.addStudent = function() {
-      StudentCrud.addStudent($scope.newStudentName, $scope.timewrap.selectedTime, $scope.newtest1Name, $scope.newDueDate1, $scope.newtest2Name, $scope.newDueDate2);
+      $scope.students = StudentCrud.addStudent($scope.newStudentName);
       var owner = "addStudent at " + Date.now();
       toggleInvert(owner);
+
     };
 
     $scope.saveAndToggleInvert = function(student) {

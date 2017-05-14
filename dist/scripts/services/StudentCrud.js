@@ -1,10 +1,12 @@
-spedtracker.factory("StudentCrud", ["$firebaseArray", "FirebaseRef", "UserCrud",
-  function($firebaseArray, FirebaseRef, UserCrud, DataCrud) {
+spedtracker.factory("StudentCrud", ["$cookies",
+  function($cookies) {
 
 // Public variables below
     // holds data as array of objects.  Each object is one item.
-    var studentsRef = FirebaseRef.getStudentsRef();
-    var students = FirebaseRef.getStudents();
+
+    // Begin Student array
+
+    var students = [];
 
     var now = new Date();
     var nowNum = now.getTime();
@@ -21,12 +23,9 @@ spedtracker.factory("StudentCrud", ["$firebaseArray", "FirebaseRef", "UserCrud",
     return {
       // handing ref over to AuthCtrl.js for User creation and authentication.
       getAllStudents: function() {
-        return students;
+        return $cookies.students;
       },
 
-      getStudentsRef: function() {
-        return studentsRef;
-      },
       // The function below and the one underneath, 'parseTime' are both called by '$scope.parseTime' in StudentCtrl to display detailed estimated time to completion info for item in DOM
 
       parseTime: function(timeInMillisecs) {
@@ -78,16 +77,6 @@ spedtracker.factory("StudentCrud", ["$firebaseArray", "FirebaseRef", "UserCrud",
             }
           };
 
-          // var addZero = function(timeUnit) {
-          //
-          //   timeUnit = timeUnit - 1;
-          //
-          //   if (timeUnit == 0 || timeUnit == 1 || timeUnit == 2 || timeUnit == 3 || timeUnit == 4 || timeUnit == 5 || timeUnit == 6 || timeUnit == 7 || timeUnit == 8 || timeUnit == 9) {
-          //     return "0" + timeUnit;
-          //   } else {
-          //     return timeUnit;
-          //   }
-          // };
         }
 
         return {
@@ -101,55 +90,55 @@ spedtracker.factory("StudentCrud", ["$firebaseArray", "FirebaseRef", "UserCrud",
         };
       },
 // This function is called by the submit button in testTracker.html when user creates an item in the form
-      addStudent: function(studentName, extendTime, test1Name, test1TimeObj, test2Name, test2TimeObj) {
+      // addStudent: function(studentName, extendTime, test1Name, test1TimeObj, test2Name, test2TimeObj) {
+      //
+      //   test1TimeNum = addHoursAndMinutes(test1TimeObj.getHours(), test1TimeObj.getMinutes());
+      //   test2TimeNum = addHoursAndMinutes(test2TimeObj.getHours(), test2TimeObj.getMinutes());
+      //
+      //   totalTime1 = test1TimeNum * extendTime;
+      //   totalTime2 = test2TimeNum * extendTime;
+      //
+      //
+      //   student.push(studentName, extendTime, test1Name, test1TimeNum, totalTime1, 0, 0, false, false, 0, 0, false, test2Name, test2TimeNum, totalTime2, 0, 0, false, false, 0, 0, false, false);
+      //   $cookies.students.push(student);
+      //   $cookies.put('students').then(function() {
+      //     console.log(studentName + ": end");
+      //
+      //   });
+      // },
 
-        test1TimeNum = addHoursAndMinutes(test1TimeObj.getHours(), test1TimeObj.getMinutes());
-        test2TimeNum = addHoursAndMinutes(test2TimeObj.getHours(), test2TimeObj.getMinutes());
+      addStudent: function(studentName) {
 
-        students.$add({
-          name: studentName,
-          extendTime: extendTime,
-          test1Name: test1Name,
-          test1Time: test1TimeNum,
-          totalTime1: test1TimeNum * extendTime,
-          test1StartRecord: 0,
-          test1StartTime: 0,
-          isTimer1Start: false,
-          isTimer1Paused: false,
-          pausedTime1: 0,
-          pausedTotal1: 0,
-          isTest1Over: false,
-          test2Name: test2Name,
-          test2Time: test2TimeNum,
-          totalTime2: test2TimeNum * extendTime,
-          test2StartRecord: 0,
-          test2StartTime: 0,
-          isTimer2Start: false,
-          isTimer2Paused: false,
-          pausedTime2: 0,
-          pausedTotal2: 0,
-          isTest2Over: false,
-          isSafeToDelete: false,
-          created_at: firebase.database.ServerValue.TIMESTAMP
-        }).then(function(studentsRef) {
-          var id = studentsRef.key;
-          console.log(studentName + ": end.  Added student with id " + id);
-          students.$indexFor(id);
+        students.push(studentName);
+        $cookies.students.push(student);
+        $cookies.put('students', students);
+        return $cookies.get('students');
 
-        });
-      }, // end of AddItem
-
-      toggleItemToDelete: function(item) {
-        var queriedItem = students.$getRecord(item.$id);
-
-        if (queriedItem.isSafeToDelete === false) {
-          item.isSafeToDelete = true;
-        } else if (queriedItem.isSafeToDelete === true){
-          item.isSafeToDelete = false;
-        }
-
-        students.$save(queriedItem);
       },
+
+      // name: studentName,
+      // extendTime: extendTime,
+      // test1Name: test1Name,
+      // test1Time: test1TimeNum,
+      // totalTime1: test1TimeNum * extendTime,
+      // test1StartRecord: 0,
+      // test1StartTime: 0,
+      // isTimer1Start: false,
+      // isTimer1Paused: false,
+      // pausedTime1: 0,
+      // pausedTotal1: 0,
+      // isTest1Over: false,
+      // test2Name: test2Name,
+      // test2Time: test2TimeNum,
+      // totalTime2: test2TimeNum * extendTime,
+      // test2StartRecord: 0,
+      // test2StartTime: 0,
+      // isTimer2Start: false,
+      // isTimer2Paused: false,
+      // pausedTime2: 0,
+      // pausedTotal2: 0,
+      // isTest2Over: false,
+      // isSafeToDelete: false,
 
       toggleSelectForDelete: function(students) {
         for (var i = 0; i < students.length; i++) {
